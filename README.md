@@ -657,29 +657,538 @@ int solve(vector<int>&nums, vector<int>&dp,int ind){
 ### **Stack/Queue**
 
 - [**Valid Parentheses](https://leetcode.com/problems/valid-parentheses/):** Check if parentheses are balanced in a string.
+
+```jsx
+ //Contine pushing  opning brackets 
+      //If  found closing than check top 
+      //if its not same type than return false
+      
+      stack<char>st;
+      for(int i=0;i<s.length();i++)
+      {
+        
+        if(s[i]=='(' || s[i]=='{' || s[i]=='[')
+        {
+           st.push(s[i]);   
+        }
+        else
+        {
+          if(st.empty())
+          {
+            return false;
+          }
+          if(s[i]==')' && st.top()!='(')
+          {
+            return false;
+          }
+          if(s[i]=='}' && st.top()!='{')
+          {
+            return false;
+          }
+          if(s[i]==']' && st.top()!='[')
+          {
+            return false;
+          }
+          else
+          {
+             st.pop(); 
+          }
+                   
+        }
+            
+      }
+      if(st.empty())
+      {
+          return true;
+      }
+      else
+      {
+          return false;   
+      }
+      
+      
+      
+```
+
 - [**Min Stack](https://leetcode.com/problems/min-stack/):** Design a stack that supports push, pop, and retrieving the minimum element in constant time.
+
+```jsx
+  //use vector of pair
+    //store {value, min element til current}
+    vector<pair<int,int>>vec;
+
+    MinStack() {
+    }
+
+    void push(int val) {
+        if(vec.empty())
+      vec.push_back({val,val});
+      else
+      vec.push_back({val,min(val,vec.back().second)});
+
+      //if empty vector -> puhs valaues
+      //if not empty store -> value and min of top and value
+    }
+
+    void pop() { 
+        vec.pop_back();
+    }
+
+    int top() { 
+        return vec.back().first;
+     }
+
+    int getMin() {
+       return vec.back().second;
+    }
+```
+
 - [**Implement Queue Using Stacks](https://leetcode.com/problems/implement-queue-using-stacks/):** Implement a queue using two stacks.
+
+```jsx
+ stack<int>primary;
+  stack<int> temp;
+    MyQueue() 
+    {
+        
+    }
+    
+    void push(int x) 
+    {
+        //Here we push elements in primary bit as its follow FIFO
+      
+        //step 1 remove all from primary and push in temp
+        //step 2 Than push x in primary
+        //step 3 Than pop all from temp and push in primary
+    
+       
+      if(primary.empty())
+      {
+        primary.push(x);
+      }
+      else
+      {
+        
+         //step 1
+        while(!primary.empty())
+        {
+          int tem=primary.top();
+          temp.push(tem);
+          primary.pop();
+        }
+      //step 2
+        primary.push(x);
+      //step 3
+        while(!temp.empty())
+        {
+          int tem2=temp.top();
+          primary.push(tem2);
+          temp.pop();
+        }
+        
+        
+      }
+    }
+    
+    int pop() //This is tricky but intresting
+    {
+      //But check that we have alreafy pushed elements in reverse order
+      //So in ordinary stack push 1 than 2 than 3 will be 1 2 3
+      //But in our case it will be 3 2 1
+      //so when we pop it first removes 1 which looks like front
+        
+      int poped=primary.top();
+      primary.pop();
+      return poped;
+    }
+    
+    int peek() 
+    {
+        return primary.top();
+    }
+    
+    bool empty() 
+    {
+        return primary.empty();
+    }
+```
+
 - [**Implement Stack Using Queues](https://leetcode.com/problems/implement-stack-using-queues/):** Implement a stack using two queues.
+
+```jsx
+ queue<int>q1;
+    queue<int>q2;
+    MyStack() 
+    {
+        
+    }
+    
+    void push(int x) 
+    {
+        q1.push(x);
+    }
+    
+    int pop() 
+    {
+        if(q1.empty())
+        return -1;
+        else
+        {
+            while(q1.size()>1)
+            {
+                q2.push(q1.front());
+                q1.pop();
+            }
+            int topel=q1.front();
+            q1.pop();   //imp
+           
+            while(!q2.empty())
+            {
+                q1.push(q2.front());
+                q2.pop();
+            }    
+        return topel;
+        }
+        
+    }
+    
+    int top() 
+    {
+        if(q1.empty())
+        return -1;
+        else
+        return q1.back();
+    }
+    
+    bool empty() {
+        return q1.empty();
+    }
+```
+
 - [**Baseball Game](https://leetcode.com/problems/baseball-game/):** Simulate a baseball game using a stack.
+
+```jsx
+stack<int> st;
+        for (auto str : operations) {
+
+            if (str == "C") {
+                st.pop();
+            } else if (str == "+") {
+                int first = st.top();
+                st.pop();
+                int second = st.top();
+                st.push(first);
+                st.push(first + second);
+            } else if (str == "D") {
+                int first = st.top();
+                st.push(first * 2);
+            }else{
+                st.push(stoi(str));
+            }
+        }
+        int sum = 0;
+        while (!st.empty()) {
+            sum += st.top();
+            st.pop();
+        }
+        return sum;
+```
 
 ---
 
 ### **Trees**
 
 - [**Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/):** Find the maximum depth of a binary tree.
+
+```jsx
+ //base condition
+        if(root==NULL)
+        return 0;
+        if(root->left==NULL && root->right==NULL){
+            return 1;
+        }
+
+        //return max from both side
+        int leftSide=maxDepth(root->left);
+        int rightSide=maxDepth(root->right);
+        //basically current + recursively find max from both side
+        return 1+max(leftSide,rightSide);
+```
+
 - [**Symmetric Tree](https://leetcode.com/problems/symmetric-tree/):** Check if a binary tree is symmetric.
+
+```jsx
+ bool compare(TreeNode* p, TreeNode* q) {
+        // Base case
+        if ((p == NULL && q != NULL) || (p != NULL && q == NULL)) {
+            return false;
+        }
+        if (p == NULL && q == NULL) {
+            return true;
+        }
+        if (p->val != q->val) {
+            return false;
+        }
+
+        bool first = compare(p->left, q->right);
+        bool second = compare(p->right, q->left);
+        if (first && second) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    bool isSymmetric(TreeNode* root) {
+        // Same as traverse both part but compare left with right
+        // Just divide tree into 2 parts and than compare
+        // Base case
+
+        return compare(root->left, root->right);
+    }
+```
+
 - [**Path Sum](https://leetcode.com/problems/path-sum/):** Check if a binary tree has a root-to-leaf path with a given sum.
+
+```jsx
+ if(root==NULL){
+            return false;
+        }
+        if(root->left==NULL && root->right==NULL){
+            if(targetSum-root->val==0){
+                //has a path
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        bool leftSide=hasPathSum(root->left,targetSum-root->val);
+        bool rightSide=hasPathSum(root->right,targetSum-root->val);
+        return leftSide||rightSide;
+```
+
 - [**Invert Binary Tree](https://leetcode.com/problems/invert-binary-tree/):** Invert a binary tree (mirror image).
+
+```jsx
+ void traverse(TreeNode* &root)
+  {
+    if(root==NULL)
+    {
+      return;
+    }
+    TreeNode* temp=NULL;  //used for swapping
+    
+    //Apply swapping
+    
+    temp=root->left;
+    root->left=root->right;
+    root->right=temp;
+   
+    traverse(root->left);
+    traverse(root->right);   
+  }
+    TreeNode* invertTree(TreeNode* root) 
+    {   
+      //Apply simple travesal in root
+      //Use temp node to swap
+      traverse(root);
+      return root;
+    }
+```
+
 - [**Same Tree](https://leetcode.com/problems/same-tree/):** Check if two binary trees are identical.
+
+```jsx
+ if((p==NULL && q!=NULL) || (p!=NULL && q==NULL)){
+            return false;
+        }
+        if(p==NULL && q==NULL){
+            return true;
+        }
+        if(p->val!=q->val)
+        {
+            return false;
+        }
+
+        if(isSameTree(p->left,q->left)==false || isSameTree(p->right,q->right)==false){
+            return false;
+        }else{
+            return true;
+        }
+```
 
 ---
 
 ### **Graph**
 
 - [**Find Center of Star Graph](https://leetcode.com/problems/find-center-of-star-graph/):** Find the center node of a star graph.
+
+```jsx
+ unordered_map<int,int>mp;
+       int count=0;
+       for(int i=0;i<edges.size();i++){
+            mp[edges[i][0]]++;
+            mp[edges[i][1]]++;
+       }
+
+       for(auto n:mp){
+            if(n.second==edges.size()){
+                return n.first;
+            }
+       }
+       return -1;
+```
+
 - [**Flood Fill](https://leetcode.com/problems/flood-fill/):** Perform a "paint fill" operation on a 2D grid.
+
+```jsx
+void dfs(int i,int j,vector<vector<int>>& image,int initialColor, 
+         int newColor)
+    {
+        //Lets check boudry of our matrix
+    int n=image.size();
+    int m=image[0].size();
+    
+    //Now erase all conition where we have to return
+    
+    if(i<0 || j<0 || i>=n || j>=m)
+    {
+        return;
+    }
+    
+    if(image[i][j]!=initialColor)
+    {
+        //Its a invalid cell
+        //Thats why we dont need to use visited vector
+        return;
+    }
+    
+    //Now update value
+    image[i][j]=newColor;
+    
+    //Now put recurive dfs call for all 4 directions
+    
+    dfs(i+1,j,image,initialColor,newColor);
+    dfs(i,j+1,image,initialColor,newColor);
+    dfs(i-1,j,image,initialColor,newColor);
+    dfs(i,j-1,image,initialColor,newColor);     
+    }
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+            //Lets solve using DFS
+        
+        //image -->given matrix
+        //sr --> row
+        //sc --> colum
+        //new colo--> color
+
+        // we only have to go if it has same color as current color
+        //ex current initial Color is 3 and we update it to 6
+        //but we only go next if it has color 3
+        
+        int initialColor=image[sr][sc];
+        int newColor=color;
+        //if current initial color is same as new color we dont need to put ewcursive call
+        if(initialColor!=newColor)
+        {
+            dfs(sr,sc,image,initialColor,newColor);
+        }
+        return image;
+    }
+```
+
 - [**Island Perimeter](https://leetcode.com/problems/island-perimeter/):** Calculate the perimeter of an island in a grid.
-- [**Matrix Diagonal Sum](https://leetcode.com/problems/matrix-diagonal-sum/):** Find the diagonal sum of a matrix.
+
+```jsx
+ int dfs(vector<vector<int>>& grid, int i, int j, vector<vector<int>>& vis) {
+        // boundires
+        int n = grid.size();
+        int m = grid[0].size();
+        if (i < 0 || j < 0 || i >= n || j >= m) {
+            //boundry cell also gives 1
+            return 1;
+        }
+
+        if (grid[i][j] == 0) {
+            // that means it's water which will add 1 parimeter
+            return 1;
+        }
+
+        if (vis[i][j] != -1) {
+            return 0;
+        }
+        // mark visited
+        vis[i][j] = 0;
+
+        // check permiter
+
+        int leftSide = 0, rightSide = 0, upperSide = 0, lowerSide = 0;
+        // left side
+
+        leftSide = dfs(grid, i, j - 1, vis);
+        upperSide = dfs(grid, i - 1, j, vis);
+        rightSide = dfs(grid, i, j + 1, vis);
+        lowerSide = dfs(grid, i + 1, j, vis);
+
+        return leftSide + upperSide + rightSide + lowerSide;
+    }
+    int islandPerimeter(vector<vector<int>>& grid) {
+        // 1 -> land
+        // 0 -> water
+
+        // exactly 1 island
+        // goal : determinde permeter of island
+        // if null -> 1
+        // if land ->0
+        // if water -> 1
+
+        // dfs -> each time found 1 check it's all 4 directions and calculate
+        // parimerter
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> vis(n, vector<int>(m, -1));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    return dfs(grid, i, j, vis);
+                }
+            }
+        }
+        return -1;
+    }
+```
+
 - [**Find the Town Judge](https://leetcode.com/problems/find-the-town-judge/):** Find the judge in a graph representing trust relationships.
+
+```jsx
+//count indegree and outdegree vectors
+        //if any node that have indegree n-1 and outdegree 0
+        //that is our answer
+
+        //code
+
+        //corner case
+        if(n==1)
+        {
+            return 1;
+        }
+
+       int res=0;
+       unordered_map<int,int>indeg;
+       unordered_map<int,int>outdeg;
+       for(auto vec:trust)
+       {
+           indeg[vec[1]]++;
+           outdeg[vec[0]]++;
+       }
+       for(auto it:indeg)
+       {
+           if(it.second==n-1 && outdeg[it.first]==0)
+           {
+               return it.first;
+           }
+       }
+       return -1;
+```
 
 ---
